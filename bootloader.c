@@ -12,7 +12,8 @@
 #include "can.h"
 
 #define FLASH_BLOCK_SIZE 64
-#define BOOTLOADER_VERSION 1
+#define BOOTLOADER_VERSION_MAJOR 1
+#define BOOTLOADER_VERSION_MINOR 0
 
 void StartWrite(void) {
     EECON2 = 0x55;
@@ -94,11 +95,12 @@ void main(void) {
     turn_on_msg.priority = H9MSG_PRIORITY_HIGH;
     turn_on_msg.type = H9MSG_TYPE_BOOTLOADER_TURNED_ON;
     turn_on_msg.destination_id = H9MSG_BROADCAST_ID;
-    turn_on_msg.dlc = 4;
-    turn_on_msg.data[0] = BOOTLOADER_VERSION;
-    turn_on_msg.data[1] = NODE_CPU_TYPE;
-    turn_on_msg.data[2] = (NODE_TYPE >> 8) & 0xff;
-    turn_on_msg.data[3] = (NODE_TYPE) & 0xff;
+    turn_on_msg.dlc = 5;
+    turn_on_msg.data[0] = BOOTLOADER_VERSION_MAJOR;
+    turn_on_msg.data[1] = BOOTLOADER_VERSION_MINOR;
+    turn_on_msg.data[2] = NODE_CPU_TYPE;
+    turn_on_msg.data[3] = (NODE_TYPE >> 8) & 0xff;
+    turn_on_msg.data[4] = (NODE_TYPE) & 0xff;
     CAN_put_msg_blocking(&turn_on_msg);
     
     h9msg_t cm;
