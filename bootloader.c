@@ -15,6 +15,9 @@
 #define BOOTLOADER_VERSION_MAJOR 1
 #define BOOTLOADER_VERSION_MINOR 0
 
+
+static uint8_t seqnum = 0;
+
 void StartWrite(void) {
     EECON2 = 0x55;
     EECON2 = 0xAA;
@@ -42,10 +45,10 @@ void write_block(uint16_t block, uint16_t dst_id) {
         CAN_get_msg_blocking(&cm);
 
         h9msg_t cm_res;
-        CAN_init_new_msg(&cm_res);
         cm_res.priority = H9MSG_PRIORITY_HIGH;
-        cm_res.seqnum = cm.seqnum;
+        cm_res.seqnum = seqnum++;
         cm_res.destination_id = dst_id;
+        cm_res.source_id = can_node_id;
 
         if (cm.source_id == dst_id && cm.type == H9MSG_TYPE_PAGE_FILL && cm.dlc == 8) {
             for (uint8_t i = 0; i < cm.dlc; ++i) {
@@ -90,11 +93,12 @@ void main(void) {
     CAN_init();
     
     h9msg_t turn_on_msg;
-    CAN_init_new_msg(&turn_on_msg);
 
     turn_on_msg.priority = H9MSG_PRIORITY_HIGH;
     turn_on_msg.type = H9MSG_TYPE_BOOTLOADER_TURNED_ON;
+    turn_on_msg.seqnum = seqnum++;
     turn_on_msg.destination_id = H9MSG_BROADCAST_ID;
+    turn_on_msg.source_id = can_node_id;
     turn_on_msg.dlc = 5;
     turn_on_msg.data[0] = BOOTLOADER_VERSION_MAJOR;
     turn_on_msg.data[1] = BOOTLOADER_VERSION_MINOR;
@@ -110,11 +114,12 @@ void main(void) {
                 uint16_t block = cm.data[0] << 8 | cm.data[1];
 
                 h9msg_t cm_res;
-                CAN_init_new_msg(&cm_res);
 
-                cm_res.destination_id = cm.source_id;
-                cm_res.seqnum = cm.seqnum;
+                cm_res.priority = H9MSG_PRIORITY_HIGH;
                 cm_res.type = H9MSG_TYPE_PAGE_FILL_NEXT;
+                cm_res.seqnum = seqnum++;
+                cm_res.destination_id = cm.source_id;
+                cm_res.source_id = can_node_id;
                 cm_res.dlc = 2;
                 cm_res.data[0] = (FLASH_BLOCK_SIZE >> 8) & 0xff;
                 cm_res.data[1] = (FLASH_BLOCK_SIZE) & 0xff;
@@ -130,6 +135,7 @@ void main(void) {
             }
         }
         else {
+            turn_on_msg.seqnum = seqnum++;
             CAN_put_msg_blocking(&turn_on_msg);
         }
     }

@@ -20,6 +20,4 @@ void CAN_init(void);
 void CAN_put_msg_blocking(h9msg_t *cm);
 uint8_t CAN_get_msg_blocking(h9msg_t*cm);
 
-void CAN_init_new_msg(h9msg_t *mes);
-
 #endif	/* CAN_H */

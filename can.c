@@ -181,15 +181,6 @@ uint8_t CAN_get_msg_blocking(h9msg_t*cm) {
     return 0;
 }
 
-void CAN_init_new_msg(h9msg_t *mes) {
-    static uint8_t next_seqnum = 1;
-    mes->priority = H9MSG_PRIORITY_LOW;
-    mes->seqnum = next_seqnum;
-    mes->source_id = can_node_id;
-    mes->dlc = 0;
-    ++next_seqnum;
-}
-
 uint8_t DATAEE_ReadByte(uint16_t bAdd) {
     EEADRH = ((bAdd >> 8) & 0x03);
     EEADR = (bAdd & 0xFF);
