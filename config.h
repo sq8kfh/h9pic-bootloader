@@ -22,16 +22,15 @@
 
 // CONFIG1H
 #pragma config FOSC = HS1       // Oscillator (HS oscillator (Medium power, 4 MHz - 16 MHz))
-//#pragma config FOSC = INTIO2    // Oscillator (Internal RC oscillator)
 #pragma config PLLCFG = OFF     // PLL x4 Enable bit (Disabled)
 #pragma config FCMEN = OFF      // Fail-Safe Clock Monitor (Disabled)
 #pragma config IESO = OFF       // Internal External Oscillator Switch Over Mode (Disabled)
 
 // CONFIG2L
-#pragma config PWRTEN = OFF     // Power Up Timer (Disabled)
+#pragma config PWRTEN = ON      // Power Up Timer (Enable)
 #pragma config BOREN = SBORDIS  // Brown Out Detect (Enabled in hardware, SBOREN disabled)
-#pragma config BORV = 3         // Brown-out Reset Voltage bits (1.8V)
-#pragma config BORPWR = ZPBORMV // BORMV Power level (ZPBORMV instead of BORMV is selected)
+#pragma config BORV = 0         // Brown-out Reset Voltage bits (3V)
+#pragma config BORPWR = MEDIUM  // BORMV MEDIUM Power level
 
 // CONFIG2H
 #pragma config WDTEN = OFF      // Watchdog Timer (WDT disabled in hardware; SWDTEN bit disabled)
@@ -47,13 +46,13 @@
 #pragma config BBSIZ = BB2K     // Boot Block Size (2K word Boot Block size)
 
 // CONFIG5L
-#pragma config CP0 = OFF        // Code Protect 00800-03FFF (Disabled)
-#pragma config CP1 = OFF        // Code Protect 04000-07FFF (Disabled)
-#pragma config CP2 = OFF        // Code Protect 08000-0BFFF (Disabled)
-#pragma config CP3 = OFF        // Code Protect 0C000-0FFFF (Disabled)
+#pragma config CP0 = ON         // Code Protect 00800-03FFF (Disabled)
+#pragma config CP1 = ON         // Code Protect 04000-07FFF (Disabled)
+#pragma config CP2 = ON         // Code Protect 08000-0BFFF (Disabled)
+#pragma config CP3 = ON         // Code Protect 0C000-0FFFF (Disabled)
 
 // CONFIG5H
-#pragma config CPB = OFF        // Code Protect Boot (Disabled)
+#pragma config CPB = ON         // Code Protect Boot (Disabled)
 #pragma config CPD = OFF        // Data EE Read Protect (Disabled)
 
 // CONFIG6L
@@ -80,7 +79,7 @@
 // Use project enums instead of #define for ON and OFF.
 
 #define _XTAL_FREQ 16000000
-#define NODE_TYPE 129
+#define NODE_TYPE 6
 #define NODE_CPU_TYPE 5
 
 #endif	/* CONFIG_H */
